@@ -1,0 +1,108 @@
+<div class="container" data-controller="weapons">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 8: Install Weapons</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>"
+         data-power-available="<%= @ship.build_data.dig('power_plant', 'power_generated').to_i %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Available Hardpoints</label>
+          <span data-weapons-target="hardpoints">0</span>
+        </div>
+        <div class="result-item">
+          <label>Power Available</label>
+          <span><%= @ship.build_data.dig("power_plant", "power_generated").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Used Hardpoints</label>
+          <span data-weapons-target="usedHardpoints">0</span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 8), method: :patch do |f| %>
+
+      <h3>Add Weapon Mount</h3>
+      <div class="weapon-builder">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mount Type</label>
+            <select id="new-mount-type" class="form-control"
+                    data-weapons-target="newMountType"
+                    data-action="change->weapons#updateWeaponOptions">
+              <option value="fixed_mount">Fixed Mount</option>
+              <option value="single_turret">Single Turret</option>
+              <option value="double_turret">Double Turret</option>
+              <option value="triple_turret">Triple Turret</option>
+              <option value="pop_up">Pop-Up Mounting</option>
+              <option value="barbette">Barbette</option>
+              <option value="small_bay">Small Bay (50 tons)</option>
+              <option value="medium_bay">Medium Bay (100 tons)</option>
+              <option value="large_bay">Large Bay (500 tons)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Weapon</label>
+            <select id="new-weapon-type" class="form-control"
+                    data-weapons-target="newWeaponType">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-secondary"
+                    data-action="click->weapons#addWeapon">
+              + Add Weapon
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <h3>Installed Weapons</h3>
+      <div data-weapons-target="weaponsList">
+        <p class="empty-state">No weapons installed yet.</p>
+      </div>
+
+      <h3>Summary</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Total Tonnage Used</label>
+          <span data-weapons-target="totalTonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Power Used</label>
+          <span data-weapons-target="totalPower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Cost</label>
+          <span data-weapons-target="totalCost">Cr0</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="weapons[data]"
+             data-weapons-target="weaponsDataInput" />
+      <input type="hidden" name="weapons[total_tonnage]"
+             data-weapons-target="totalTonnageInput" />
+      <input type="hidden" name="weapons[total_cost]"
+             data-weapons-target="totalCostInput" />
+      <input type="hidden" name="weapons[total_power]"
+             data-weapons-target="totalPowerInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Sensors", step_ship_path(@ship, step_number: 7),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Optional Systems →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

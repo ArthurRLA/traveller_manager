@@ -1,0 +1,97 @@
+<div class="container" data-controller="fuel-tanks">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 4: Install Fuel Tanks</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>"
+         data-jump-rating="<%= @ship.build_data.dig('drives', 'jump', 'rating').to_i %>"
+         data-power-plant-tonnage="<%= @ship.build_data.dig('power_plant', 'tonnage').to_i %>"
+         data-power-plant-type="<%= @ship.build_data.dig('power_plant', 'type') %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Jump Rating</label>
+          <span><%= @ship.build_data.dig("drives", "jump", "rating").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Power Plant Tonnage</label>
+          <span><%= @ship.build_data.dig("power_plant", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Power Plant Type</label>
+          <span><%= @ship.build_data.dig("power_plant", "type")&.humanize %></span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 4), method: :patch do |f| %>
+
+      <h3>Jump Fuel</h3>
+      <div class="info-text">
+        <p>Required: <strong><span data-fuel-tanks-target="jumpFuelRequired">0</span> tons</strong>
+        (10% of hull tonnage × jump rating)</p>
+      </div>
+      <div class="form-group">
+        <label>Jump Fuel Tonnage</label>
+        <input type="number" name="fuel[jump_fuel]" min="0" step="1"
+               value="<%= @ship.build_data.dig('fuel', 'jump_fuel') || 0 %>"
+               class="form-control"
+               data-fuel-tanks-target="jumpFuel"
+               data-action="input->fuel-tanks#calculate" />
+        <small>Must be at least the required amount to perform jumps.</small>
+      </div>
+
+      <hr>
+
+      <h3>Power Plant Fuel</h3>
+      <div class="info-text">
+        <p>Required: <strong><span data-fuel-tanks-target="powerFuelRequired">0</span> tons</strong>
+        (10% of power plant tonnage)</p>
+        <p><small>Chemical plants require 10 tons per ton of power plant per 2 weeks.</small></p>
+      </div>
+      <div class="form-group">
+        <label>Power Plant Fuel Tonnage</label>
+        <input type="number" name="fuel[power_fuel]" min="0" step="1"
+               value="<%= @ship.build_data.dig('fuel', 'power_fuel') || 0 %>"
+               class="form-control"
+               data-fuel-tanks-target="powerFuel"
+               data-action="input->fuel-tanks#calculate" />
+        <small>Increase for extended operations without refuelling.</small>
+      </div>
+
+      <hr>
+
+      <h3>Summary</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Total Fuel Tonnage</label>
+          <span data-fuel-tanks-target="totalFuel">0</span>
+        </div>
+        <div class="result-item">
+          <label>Jump Fuel Status</label>
+          <span data-fuel-tanks-target="jumpFuelStatus">-</span>
+        </div>
+        <div class="result-item">
+          <label>Power Fuel Status</label>
+          <span data-fuel-tanks-target="powerFuelStatus">-</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="fuel[total_fuel]"
+             data-fuel-tanks-target="totalFuelInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Power Plant", step_ship_path(@ship, step_number: 3),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Bridge →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

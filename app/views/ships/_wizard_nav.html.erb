@@ -1,0 +1,17 @@
+<div class="wizard-nav">
+  <h2><%= @ship.name %></h2>
+
+  <div class="steps-list">
+    <% Ship::STEPS.each do |number, name| %>
+      <div class="step-item <%= step_status_class(number, @ship) %>">
+        <span class="step-number"><%= number %></span>
+        <span class="step-name"><%= name %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="ship-summary">
+    <p>Remaining Tonnage: <strong><%= @ship.remaining_tonnage %></strong></p>
+    <p>Total Cost: <strong>Cr<%= number_with_delimiter(@ship.total_cost) %></strong></p>
+  </div>
+</div>

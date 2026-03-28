@@ -1,0 +1,117 @@
+<div class="container" data-controller="power-plant">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 3: Install Power Plant</h2>
+
+    <div class="info-box"
+        data-manoeuvre-power="<%= @ship.build_data.dig('drives', 'manoeuvre', 'power').to_i %>"
+        data-jump-power="<%= @ship.build_data.dig('drives', 'jump', 'power').to_i %>">
+      <h3>Power Requirements</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage") %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Basic Ship Systems</label>
+          <span data-power-plant-target="basicPower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Manoeuvre Drive</label>
+          <span data-power-plant-target="manoeuvrePower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Jump Drive</label>
+          <span data-power-plant-target="jumpPower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Power Needed</label>
+          <strong><span data-power-plant-target="totalNeeded">0</span></strong>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 3), method: :patch do |f| %>
+
+      <h3>Power Plant Type</h3>
+      <div class="form-group">
+        <label>Type</label>
+        <select name="power_plant[type]" class="form-control"
+                data-power-plant-target="type"
+                data-action="change->power-plant#calculate">
+          <% [
+            ["Fission (TL6)",       "fission"],
+            ["Chemical (TL7)",      "chemical"],
+            ["Fusion (TL8)",        "fusion_tl8"],
+            ["Fusion (TL12)",       "fusion_tl12"],
+            ["Fusion (TL15)",       "fusion_tl15"],
+            ["Antimatter (TL20)",   "antimatter"]
+          ].each do |label, value| %>
+            <option value="<%= value %>"
+              <%= "selected" if @ship.build_data.dig("power_plant", "type") == value %>>
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Power Plant Tonnage</label>
+        <input type="number" name="power_plant[tonnage]" min="1" step="1"
+               value="<%= @ship.build_data.dig('power_plant', 'tonnage') || 1 %>"
+               class="form-control"
+               data-power-plant-target="tonnage"
+               data-action="input->power-plant#calculate" />
+        <small>Adjust until Power Generated meets or exceeds Total Power Needed.</small>
+      </div>
+
+      <h3>Calculated Values</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Power per Ton</label>
+          <span data-power-plant-target="powerPerTon">0</span>
+        </div>
+        <div class="result-item">
+          <label>Power Generated</label>
+          <span data-power-plant-target="powerGenerated">0</span>
+        </div>
+        <div class="result-item">
+          <label>Cost per Ton</label>
+          <span data-power-plant-target="costPerTon">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Cost</label>
+          <span data-power-plant-target="totalCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Min Tech Level</label>
+          <span data-power-plant-target="techLevel">TL6</span>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Power Status</label>
+          <span data-power-plant-target="powerStatus">-</span>
+        </div>
+        <div class="result-item">
+          <label>Power Surplus/Deficit</label>
+          <span data-power-plant-target="powerDiff">0</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="power_plant[cost]"
+             data-power-plant-target="costInput" />
+      <input type="hidden" name="power_plant[power_generated]"
+             data-power-plant-target="powerGeneratedInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Drives", step_ship_path(@ship, step_number: 2),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Fuel Tanks →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

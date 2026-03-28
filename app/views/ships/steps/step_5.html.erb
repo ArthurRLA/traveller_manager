@@ -1,0 +1,93 @@
+<div class="container" data-controller="bridge">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 5: Install Bridge</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 5), method: :patch do |f| %>
+
+      <h3>Bridge Size</h3>
+      <div class="info-text">
+        <p>Required size: <strong>
+          <span data-bridge-target="requiredSize">0</span> tons
+        </strong></p>
+        <p>Base cost: <strong>
+          Cr<span data-bridge-target="baseCost">0</span>
+        </strong></p>
+      </div>
+
+      <h3>Bridge Options</h3>
+
+      <div class="form-group">
+        <label>Bridge Type</label>
+        <select name="bridge[type]" class="form-control"
+                data-bridge-target="type"
+                data-action="change->bridge#calculate">
+          <% [
+            ["Standard Bridge",  "standard"],
+            ["Smaller Bridge",   "smaller"],
+            ["Command Bridge",   "command"]
+          ].each do |label, value| %>
+            <option value="<%= value %>"
+              <%= "selected" if @ship.build_data.dig("bridge", "type") == value %>>
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+        <small>
+          Smaller Bridge: half cost, DM-1 to all spacecraft operations. 
+          Command Bridge: +40 tons, +MCr30, DM+1 to Tactics (naval). 
+          Only for ships over 5,000 tons.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Holographic Controls</label>
+        <input type="checkbox" name="bridge[holographic]" value="1"
+               <%= "checked" if @ship.build_data.dig("bridge", "holographic") %>
+               data-bridge-target="holographic"
+               data-action="change->bridge#calculate" />
+        <small>+25% to bridge cost, DM+2 to initiative. Available at TL9.</small>
+      </div>
+
+      <h3>Calculated Values</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Bridge Tonnage</label>
+          <span data-bridge-target="tonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Final Cost</label>
+          <span data-bridge-target="finalCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>DM Notes</label>
+          <span data-bridge-target="dmNotes">-</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="bridge[tonnage]"
+             data-bridge-target="tonnageInput" />
+      <input type="hidden" name="bridge[cost]"
+             data-bridge-target="costInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Fuel Tanks", step_ship_path(@ship, step_number: 4),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and Continue to Computer →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

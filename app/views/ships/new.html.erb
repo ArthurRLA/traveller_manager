@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>Name your ship</h1>
+
+  <%= form_with model: @ship do |f| %>
+    <div class="form-group">
+      <%= f.label :name, "Ship Name" %>
+      <%= f.text_field :name, placeholder: "Write your's ship name", class: "form-control" %>
+    </div>
+
+    <%= f.submit "Start creating your ship", class: "btn btn-primary" %>
+  <% end %>
+</div>

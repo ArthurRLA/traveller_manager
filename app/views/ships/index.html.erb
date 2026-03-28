@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="header">
+    <h1>Shipward</h1>
+    <%= link_to "Build New Ship", new_ship_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @ships.any? %>
+    <div class="ships-grid">
+      <% @ships.each do |ship| %>
+        <div class="ship-card">
+          <h3><%= ship.name %></h3>
+          <p>Status: <strong><%= ship.status.humanize %></strong></p>
+          <p>Current Step: <strong><%= ship.current_step_name %></strong></p>
+          <p>Total Cost: <strong>Cr<%= number_with_delimiter(ship.total_cost) %></strong></p>
+          <div class="card-actions">
+            <%= link_to "Continue", ship_path(ship), class: "btn btn-secondary" %>
+            <%= button_to "Delete", ship_path(ship), method: :delete, 
+                class: "btn btn-danger",
+                data: { confirm: "Sure?" } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <p>Não tem nave ainda</p>
+    </div>
+  <% end %>
+</div>

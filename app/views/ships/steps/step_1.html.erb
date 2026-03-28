@@ -1,0 +1,74 @@
+<div class="container" data-controller="hull">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 1: Hull Configuration</h2>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 1), method: :patch do |f| %>
+
+      <div class="form-group">
+        <label>Hull Tonnage</label>
+        <input type="number" name="hull[tonnage]" min="5" step="1"
+            value="<%= @ship.build_data.dig('hull', 'tonnage') || 100 %>"
+            class="form-control"
+            data-hull-target="tonnage"
+            data-action="input->hull#calculate" />
+        <small>Minimum 5 tons. Jump-capable ships must be at least 100 tons.</small>
+      </div>
+
+      <div class="form-group">
+        <label>Hull Configuration</label>
+        <select name="hull[configuration]" class="form-control"
+                data-hull-target="configuration"
+                data-action="change->hull#calculate">
+          <% [
+            ["Standard",            "standard"],
+            ["Streamlined",         "streamlined"],
+            ["Sphere",              "sphere"],
+            ["Close Structure",     "close_structure"],
+            ["Dispersed Structure", "dispersed_structure"],
+            ["Planetoid",           "planetoid"],
+            ["Buffered Planetoid",  "buffered_planetoid"]
+          ].each do |label, value| %>
+            <option value="<%= value %>"
+              <%= "selected" if @ship.build_data.dig("hull", "configuration") == value %>>
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="hull-results">
+        <h3>Calculated Values</h3>
+        <div class="result-grid">
+          <div class="result-item">
+            <label>Base Cost</label>
+            <span data-hull-target="baseCost">Cr0</span>
+          </div>
+          <div class="result-item">
+            <label>Final Cost</label>
+            <span data-hull-target="finalCost">Cr0</span>
+          </div>
+          <div class="result-item">
+            <label>Hull Points</label>
+            <span data-hull-target="hullPoints">0</span>
+          </div>
+          <div class="result-item">
+            <label>Streamlined?</label>
+            <span data-hull-target="streamlined">-</span>
+          </div>
+        </div>
+
+        <input type="hidden" name="hull[cost]"
+               data-hull-target="costInput" />
+        <input type="hidden" name="hull[hull_points]"
+               data-hull-target="hullPointsInput" />
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Save and continue to Drives →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

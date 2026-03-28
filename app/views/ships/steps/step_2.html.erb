@@ -1,0 +1,117 @@
+<div class="container" data-controller="drives">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 2: Install Drives</h2>
+
+    <div class="info-box">
+      <p>Hull Tonnage: <strong><%= @ship.build_data.dig("hull", "tonnage") %> tons</strong></p>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 2), method: :patch do |f| %>
+
+      <h3>Manoeuvre Drive</h3>
+      <div class="form-group">
+        <label>Thrust Rating (0-11)</label>
+        <input type="number" name="drives[manoeuvre][rating]" min="0" max="11" step="1"
+               value="<%= @ship.build_data.dig('drives', 'manoeuvre', 'rating') || 1 %>"
+               class="form-control"
+               data-drives-target="manoeuvreRating"
+               data-action="input->drives#calculate" />
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Tonnage Used</label>
+          <span data-drives-target="maneuverTonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Cost</label>
+          <span data-drives-target="maneuverCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Power Required</label>
+          <span data-drives-target="maneuverPower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Min Tech Level</label>
+          <span data-drives-target="maneuverTL">TL9</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="drives[manoeuvre][tonnage]"
+             data-drives-target="maneuverTonnageInput" />
+      <input type="hidden" name="drives[manoeuvre][cost]"
+             data-drives-target="maneuverCostInput" />
+      <input type="hidden" name="drives[manoeuvre][power]"
+             data-drives-target="maneuverPowerInput" />
+
+      <hr>
+
+      <h3>Jump Drive <small>(optional)</small></h3>
+      <div class="form-group">
+        <label>Jump Rating (0 = none, 1-9)</label>
+        <input type="number" name="drives[jump][rating]" min="0" max="9" step="1"
+               value="<%= @ship.build_data.dig('drives', 'jump', 'rating') || 0 %>"
+               class="form-control"
+               data-drives-target="jumpRating"
+               data-action="input->drives#calculate" />
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Tonnage Used</label>
+          <span data-drives-target="jumpTonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Cost</label>
+          <span data-drives-target="jumpCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Power Required</label>
+          <span data-drives-target="jumpPower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Min Tech Level</label>
+          <span data-drives-target="jumpTL">-</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="drives[jump][tonnage]"
+             data-drives-target="jumpTonnageInput" />
+      <input type="hidden" name="drives[jump][cost]"
+             data-drives-target="jumpCostInput" />
+      <input type="hidden" name="drives[jump][power]"
+             data-drives-target="jumpPowerInput" />
+
+      <hr>
+
+      <h3>Summary</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Total Tonnage Used</label>
+          <span data-drives-target="totalTonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Remaining Tonnage</label>
+          <span data-drives-target="remainingTonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Cost</label>
+          <span data-drives-target="totalCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Power Required</label>
+          <span data-drives-target="totalPower">0</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= link_to "← Back to Hull", step_ship_path(@ship, step_number: 1),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Power Plant →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

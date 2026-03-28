@@ -1,0 +1,101 @@
+<div class="container" data-controller="optional-systems">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 9: Install Optional Systems</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>"
+         data-power-available="<%= @ship.build_data.dig('power_plant', 'power_generated').to_i %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Power Available</label>
+          <span><%= @ship.build_data.dig("power_plant", "power_generated").to_i %></span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 9), method: :patch do |f| %>
+
+      <h3>Add Optional System</h3>
+      <div class="weapon-builder">
+        <div class="form-row">
+          <div class="form-group">
+            <label>System Category</label>
+            <select class="form-control"
+                    data-optional-systems-target="category"
+                    data-action="change->optional-systems#updateSystemOptions">
+              <option value="fuel">Fuel Systems</option>
+              <option value="craft">Small Craft & Docking</option>
+              <option value="sensors">Sensor Upgrades</option>
+              <option value="misc">Miscellaneous</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>System</label>
+            <select class="form-control"
+                    data-optional-systems-target="systemType">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Tonnage</label>
+            <input type="number" min="1" step="1" value="1" class="form-control"
+                   data-optional-systems-target="systemTonnage" />
+          </div>
+
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-secondary"
+                    data-action="click->optional-systems#addSystem">
+              + Add System
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <h3>Installed Optional Systems</h3>
+      <div data-optional-systems-target="systemsList">
+        <p class="empty-state">No optional systems installed yet.</p>
+      </div>
+
+      <h3>Summary</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Total Tonnage Used</label>
+          <span data-optional-systems-target="totalTonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Power Used</label>
+          <span data-optional-systems-target="totalPower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Cost</label>
+          <span data-optional-systems-target="totalCost">Cr0</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="optional_systems[data]"
+             data-optional-systems-target="systemsDataInput" />
+      <input type="hidden" name="optional_systems[total_tonnage]"
+             data-optional-systems-target="totalTonnageInput" />
+      <input type="hidden" name="optional_systems[total_cost]"
+             data-optional-systems-target="totalCostInput" />
+      <input type="hidden" name="optional_systems[total_power]"
+             data-optional-systems-target="totalPowerInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Weapons", step_ship_path(@ship, step_number: 8),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Crew →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

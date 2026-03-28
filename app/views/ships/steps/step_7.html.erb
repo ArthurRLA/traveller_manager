@@ -1,0 +1,86 @@
+<div class="container" data-controller="sensors">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 7: Install Sensors</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Power Available</label>
+          <span><%= @ship.build_data.dig("power_plant", "power_generated").to_i %></span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 7), method: :patch do |f| %>
+
+      <h3>Sensor Suite</h3>
+      <div class="form-group">
+        <label>Sensor Type</label>
+        <select name="sensors[type]" class="form-control"
+                data-sensors-target="type"
+                data-action="change->sensors#calculate">
+          <% [
+            ["Basic (TL8) - Free",                    "basic"],
+            ["Civilian Grade (TL9) - MCr3",           "civilian"],
+            ["Military Grade (TL10) - MCr4.1",        "military"],
+            ["Improved (TL12) - MCr4.3",              "improved"],
+            ["Advanced (TL15) - MCr5.3",              "advanced"]
+          ].each do |label, value| %>
+            <option value="<%= value %>"
+              <%= "selected" if @ship.build_data.dig("sensors", "type") == value %>>
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+
+      <h3>Sensor Details</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Suite</label>
+          <span data-sensors-target="suite">-</span>
+        </div>
+        <div class="result-item">
+          <label>Electronics DM</label>
+          <span data-sensors-target="dm">-</span>
+        </div>
+        <div class="result-item">
+          <label>Tonnage</label>
+          <span data-sensors-target="tonnage">-</span>
+        </div>
+        <div class="result-item">
+          <label>Power Required</label>
+          <span data-sensors-target="power">-</span>
+        </div>
+        <div class="result-item">
+          <label>Cost</label>
+          <span data-sensors-target="cost">-</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="sensors[tonnage]"
+             data-sensors-target="tonnageInput" />
+      <input type="hidden" name="sensors[cost]"
+             data-sensors-target="costInput" />
+      <input type="hidden" name="sensors[power]"
+             data-sensors-target="powerInput" />
+      <input type="hidden" name="sensors[dm]"
+             data-sensors-target="dmInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Computer", step_ship_path(@ship, step_number: 6),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Weapons →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,142 @@
+<div class="container" data-controller="computer">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 6: Install Computer</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Jump Rating</label>
+          <span><%= @ship.build_data.dig("drives", "jump", "rating").to_i %></span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 6), method: :patch do |f| %>
+
+      <h3>Primary Computer</h3>
+
+      <div class="form-group">
+        <label>Computer Model</label>
+        <select name="computer[primary][model]" class="form-control"
+                data-computer-target="primaryModel"
+                data-action="change->computer#calculate">
+          <% [
+            ["Computer/5  (TL7)  - Cr30,000",    "computer_5"],
+            ["Computer/10 (TL9)  - Cr160,000",   "computer_10"],
+            ["Computer/15 (TL11) - MCr2",         "computer_15"],
+            ["Computer/20 (TL12) - MCr5",         "computer_20"],
+            ["Computer/25 (TL13) - MCr10",        "computer_25"],
+            ["Computer/30 (TL14) - MCr20",        "computer_30"],
+            ["Computer/35 (TL15) - MCr30",        "computer_35"],
+            ["Core/40 (TL9)  - MCr45",            "core_40"],
+            ["Core/50 (TL10) - MCr60",            "core_50"],
+            ["Core/60 (TL11) - MCr75",            "core_60"],
+            ["Core/70 (TL12) - MCr80",            "core_70"],
+            ["Core/80 (TL13) - MCr95",            "core_80"],
+            ["Core/90 (TL14) - MCr120",           "core_90"],
+            ["Core/100 (TL15) - MCr130",          "core_100"]
+          ].each do |label, value| %>
+            <option value="<%= value %>"
+              <%= "selected" if @ship.build_data.dig("computer", "primary", "model") == value %>>
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Options</label>
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" name="computer[primary][bis]" value="1"
+                   <%= "checked" if @ship.build_data.dig("computer", "primary", "bis") %>
+                   data-computer-target="primaryBis"
+                   data-action="change->computer#calculate" />
+            Jump Control Specialisation (/bis) - +50% cost, +5 bandwidth for Jump Control
+          </label>
+          <label>
+            <input type="checkbox" name="computer[primary][fib]" value="1"
+                   <%= "checked" if @ship.build_data.dig("computer", "primary", "fib") %>
+                   data-computer-target="primaryFib"
+                   data-action="change->computer#calculate" />
+            Hardened Systems (/fib) - +50% cost, immune to Ion weapons
+          </label>
+        </div>
+      </div>
+
+      <h3>Backup Computer <small>(optional)</small></h3>
+      <div class="form-group">
+        <label>Backup Computer Model</label>
+        <select name="computer[backup][model]" class="form-control"
+                data-computer-target="backupModel"
+                data-action="change->computer#calculate">
+          <option value="none">None</option>
+          <% [
+            ["Computer/5  (TL7)  - Cr30,000",  "computer_5"],
+            ["Computer/10 (TL9)  - Cr160,000", "computer_10"],
+            ["Computer/15 (TL11) - MCr2",       "computer_15"],
+            ["Computer/20 (TL12) - MCr5",       "computer_20"],
+            ["Computer/25 (TL13) - MCr10",      "computer_25"],
+            ["Computer/30 (TL14) - MCr20",      "computer_30"]
+          ].each do |label, value| %>
+            <option value="<%= value %>"
+              <%= "selected" if @ship.build_data.dig("computer", "backup", "model") == value %>>
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+        <small>Must have lower Processing score than primary. Cannot operate simultaneously.</small>
+      </div>
+
+      <h3>Calculated Values</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Primary Processing</label>
+          <span data-computer-target="primaryProcessing">0</span>
+        </div>
+        <div class="result-item">
+          <label>Primary Cost</label>
+          <span data-computer-target="primaryCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Backup Processing</label>
+          <span data-computer-target="backupProcessing">-</span>
+        </div>
+        <div class="result-item">
+          <label>Backup Cost</label>
+          <span data-computer-target="backupCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Cost</label>
+          <span data-computer-target="totalCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Backup Valid?</label>
+          <span data-computer-target="backupValid">-</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="computer[primary][cost]"
+             data-computer-target="primaryCostInput" />
+      <input type="hidden" name="computer[backup][cost]"
+             data-computer-target="backupCostInput" />
+      <input type="hidden" name="computer[total_cost]"
+             data-computer-target="totalCostInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Bridge", step_ship_path(@ship, step_number: 5),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Sensors →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>
