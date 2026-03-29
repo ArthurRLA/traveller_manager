@@ -1,0 +1,130 @@
+<div class="container" data-controller="staterooms">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 11: Install Staterooms</h2>
+
+    <div class="info-box"
+         data-total-crew="<%= @ship.build_data.dig('crew', 'total_crew').to_i %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Total Crew</label>
+          <span><%= @ship.build_data.dig("crew", "total_crew").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Recommended Staterooms</label>
+          <span data-staterooms-target="recommended">0</span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 11), method: :patch do |f| %>
+
+      <h3>Standard Staterooms</h3>
+      <div class="info-text">
+        <p>Each stateroom: 4 tons, MCr0.5. One person per stateroom recommended.</p>
+      </div>
+      <div class="form-group">
+        <label>Number of Staterooms</label>
+        <input type="number" name="staterooms[standard]" min="0" step="1"
+               value="<%= @ship.build_data.dig('staterooms', 'standard') || 0 %>"
+               class="form-control"
+               data-staterooms-target="standard"
+               data-action="input->staterooms#calculate" />
+      </div>
+
+      <h3>High Staterooms</h3>
+      <div class="info-text">
+        <p>Each high stateroom: 6 tons, MCr0.8. DM+1 when seeking high passengers.</p>
+      </div>
+      <div class="form-group">
+        <label>Number of High Staterooms</label>
+        <input type="number" name="staterooms[high]" min="0" step="1"
+               value="<%= @ship.build_data.dig('staterooms', 'high') || 0 %>"
+               class="form-control"
+               data-staterooms-target="high"
+               data-action="input->staterooms#calculate" />
+      </div>
+
+      <h3>Luxury Staterooms</h3>
+      <div class="info-text">
+        <p>Each luxury stateroom: 10 tons, MCr1.5. DM+2 when seeking high passengers.</p>
+      </div>
+      <div class="form-group">
+        <label>Number of Luxury Staterooms</label>
+        <input type="number" name="staterooms[luxury]" min="0" step="1"
+               value="<%= @ship.build_data.dig('staterooms', 'luxury') || 0 %>"
+               class="form-control"
+               data-staterooms-target="luxury"
+               data-action="input->staterooms#calculate" />
+      </div>
+
+      <h3>Low Berths</h3>
+      <div class="info-text">
+        <p>Each low berth: 0.5 tons, Cr50,000. Suspended animation for emergencies.</p>
+        <p>Power: 1 per 10 berths.</p>
+      </div>
+      <div class="form-group">
+        <label>Number of Low Berths</label>
+        <input type="number" name="staterooms[low_berths]" min="0" step="1"
+               value="<%= @ship.build_data.dig('staterooms', 'low_berths') || 0 %>"
+               class="form-control"
+               data-staterooms-target="lowBerths"
+               data-action="input->staterooms#calculate" />
+      </div>
+
+      <h3>Common Areas</h3>
+      <div class="info-text">
+        <p>Recommended: 25% of stateroom tonnage. MCr0.1 per ton.</p>
+      </div>
+      <div class="form-group">
+        <label>Common Area Tonnage</label>
+        <input type="number" name="staterooms[common_area]" min="0" step="1"
+               value="<%= @ship.build_data.dig('staterooms', 'common_area') || 0 %>"
+               class="form-control"
+               data-staterooms-target="commonArea"
+               data-action="input->staterooms#calculate" />
+        <small>Recommended: <span data-staterooms-target="recommendedCommon">0</span> tons</small>
+      </div>
+
+      <h3>Summary</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Total Berths</label>
+          <span data-staterooms-target="totalBerths">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Tonnage</label>
+          <span data-staterooms-target="totalTonnage">0</span>
+        </div>
+        <div class="result-item">
+          <label>Total Cost</label>
+          <span data-staterooms-target="totalCost">Cr0</span>
+        </div>
+        <div class="result-item">
+          <label>Power Required</label>
+          <span data-staterooms-target="totalPower">0</span>
+        </div>
+        <div class="result-item">
+          <label>Crew Coverage</label>
+          <span data-staterooms-target="crewCoverage">-</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="staterooms[total_tonnage]"
+             data-staterooms-target="totalTonnageInput" />
+      <input type="hidden" name="staterooms[total_cost]"
+             data-staterooms-target="totalCostInput" />
+      <input type="hidden" name="staterooms[total_power]"
+             data-staterooms-target="totalPowerInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Crew", step_ship_path(@ship, step_number: 10),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Cargo →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

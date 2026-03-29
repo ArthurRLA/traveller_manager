@@ -1,0 +1,113 @@
+<div class="container" data-controller="cargo">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 12: Allocate Cargo Space</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>"
+         data-drives-tonnage="<%= @ship.build_data.dig('drives', 'manoeuvre', 'tonnage').to_i + @ship.build_data.dig('drives', 'jump', 'tonnage').to_i %>"
+         data-power-plant-tonnage="<%= @ship.build_data.dig('power_plant', 'tonnage').to_i %>"
+         data-fuel-tonnage="<%= @ship.build_data.dig('fuel', 'total_fuel').to_i %>"
+         data-bridge-tonnage="<%= @ship.build_data.dig('bridge', 'tonnage').to_i %>"
+         data-sensors-tonnage="<%= @ship.build_data.dig('sensors', 'tonnage').to_i %>"
+         data-weapons-tonnage="<%= @ship.build_data.dig('weapons', 'total_tonnage').to_i %>"
+         data-optional-tonnage="<%= @ship.build_data.dig('optional_systems', 'total_tonnage').to_i %>"
+         data-staterooms-tonnage="<%= @ship.build_data.dig('staterooms', 'total_tonnage').to_i %>">
+      <h3>Tonnage Breakdown</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Drives</label>
+          <span>
+            <%= @ship.build_data.dig('drives', 'manoeuvre', 'tonnage').to_i +
+                @ship.build_data.dig('drives', 'jump', 'tonnage').to_i %> tons
+          </span>
+        </div>
+        <div class="result-item">
+          <label>Power Plant</label>
+          <span><%= @ship.build_data.dig("power_plant", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Fuel</label>
+          <span><%= @ship.build_data.dig("fuel", "total_fuel").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Bridge</label>
+          <span><%= @ship.build_data.dig("bridge", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Sensors</label>
+          <span><%= @ship.build_data.dig("sensors", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Weapons</label>
+          <span><%= @ship.build_data.dig("weapons", "total_tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Optional Systems</label>
+          <span><%= @ship.build_data.dig("optional_systems", "total_tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Staterooms</label>
+          <span><%= @ship.build_data.dig("staterooms", "total_tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Total Used</label>
+          <strong><span data-cargo-target="totalUsed">0</span> tons</strong>
+        </div>
+        <div class="result-item">
+          <label>Available for Cargo</label>
+          <strong><span data-cargo-target="availableCargo">0</span> tons</strong>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 12), method: :patch do |f| %>
+
+      <h3>Cargo Allocation</h3>
+      <div class="info-text">
+        <p>Any remaining space can be allocated as cargo. There is no cost for cargo space.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Cargo Tonnage</label>
+        <input type="number" name="cargo[tonnage]" min="0" step="1"
+               value="<%= @ship.build_data.dig('cargo', 'tonnage') || 0 %>"
+               class="form-control"
+               data-cargo-target="cargoTonnage"
+               data-action="input->cargo#calculate" />
+        <small>Maximum available: <span data-cargo-target="maxCargo">0</span> tons</small>
+      </div>
+
+      <h3>Cargo Status</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Cargo Allocated</label>
+          <span data-cargo-target="cargoAllocated">0</span>
+        </div>
+        <div class="result-item">
+          <label>Remaining Unallocated</label>
+          <span data-cargo-target="unallocated">0</span>
+        </div>
+        <div class="result-item">
+          <label>Space Status</label>
+          <span data-cargo-target="spaceStatus">-</span>
+        </div>
+      </div>
+
+      <input type="hidden" name="cargo[available]"
+             data-cargo-target="availableInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Staterooms", step_ship_path(@ship, step_number: 11),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Finalise →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

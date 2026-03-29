@@ -1,0 +1,151 @@
+<div class="container" data-controller="crew">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 10: Determine Crew</h2>
+
+    <div class="info-box"
+         data-hull-tonnage="<%= @ship.build_data.dig('hull', 'tonnage').to_i %>"
+         data-drive-tonnage="<%= (@ship.build_data.dig('drives', 'manoeuvre', 'tonnage').to_i + @ship.build_data.dig('drives', 'jump', 'tonnage').to_i + @ship.build_data.dig('power_plant', 'tonnage').to_i) %>"
+         data-jump-rating="<%= @ship.build_data.dig('drives', 'jump', 'rating').to_i %>"
+         data-weapons-data="<%= @ship.build_data.dig('weapons', 'data').to_json %>">
+      <h3>Ship Data</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Hull Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Drive + Power Plant Tonnage</label>
+          <span>
+            <%= @ship.build_data.dig('drives', 'manoeuvre', 'tonnage').to_i +
+                @ship.build_data.dig('drives', 'jump', 'tonnage').to_i +
+                @ship.build_data.dig('power_plant', 'tonnage').to_i %> tons
+          </span>
+        </div>
+        <div class="result-item">
+          <label>Jump Drive Installed</label>
+          <span><%= @ship.build_data.dig('drives', 'jump', 'rating').to_i > 0 ? "Yes" : "No" %></span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 10), method: :patch do |f| %>
+
+      <h3>Ship Type</h3>
+      <div class="form-group">
+        <label>Operation Type</label>
+        <select name="crew[ship_type]" class="form-control"
+                data-crew-target="shipType"
+                data-action="change->crew#calculate">
+          <option value="commercial">Commercial</option>
+          <option value="military">Military</option>
+        </select>
+      </div>
+
+      <h3>Crew Requirements</h3>
+      <div class="crew-table">
+        <table class="weapons-table">
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Skill</th>
+              <th>Salary/Month</th>
+              <th>Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Captain</td>
+              <td>-</td>
+              <td>Cr10,000</td>
+              <td><span data-crew-target="captain">0</span></td>
+            </tr>
+            <tr>
+              <td>Pilot</td>
+              <td>Pilot</td>
+              <td>Cr6,000</td>
+              <td><span data-crew-target="pilot">0</span></td>
+            </tr>
+            <tr>
+              <td>Astrogator</td>
+              <td>Astrogation</td>
+              <td>Cr5,000</td>
+              <td><span data-crew-target="astrogator">0</span></td>
+            </tr>
+            <tr>
+              <td>Engineer</td>
+              <td>Engineer</td>
+              <td>Cr4,000</td>
+              <td><span data-crew-target="engineer">0</span></td>
+            </tr>
+            <tr>
+              <td>Maintenance</td>
+              <td>Mechanic</td>
+              <td>Cr1,000</td>
+              <td><span data-crew-target="maintenance">0</span></td>
+            </tr>
+            <tr>
+              <td>Gunner</td>
+              <td>Gunner</td>
+              <td>Cr2,000</td>
+              <td><span data-crew-target="gunner">0</span></td>
+            </tr>
+            <tr>
+              <td>Administrator</td>
+              <td>Admin</td>
+              <td>Cr1,500</td>
+              <td><span data-crew-target="administrator">0</span></td>
+            </tr>
+            <tr>
+              <td>Sensor Operator</td>
+              <td>Electronics (sensors)</td>
+              <td>Cr4,000</td>
+              <td><span data-crew-target="sensorOperator">0</span></td>
+            </tr>
+            <tr>
+              <td>Medic</td>
+              <td>Medic</td>
+              <td>Cr4,000</td>
+              <td><span data-crew-target="medic">0</span></td>
+            </tr>
+            <tr>
+              <td>Officer</td>
+              <td>Leadership/Persuade</td>
+              <td>Cr5,000</td>
+              <td><span data-crew-target="officer">0</span></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"><strong>Total Crew</strong></td>
+              <td><strong>Cr<span data-crew-target="totalSalary">0</span>/month</strong></td>
+              <td><strong><span data-crew-target="totalCrew">0</span></strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <input type="hidden" name="crew[captain]"         data-crew-target="captainInput" />
+      <input type="hidden" name="crew[pilot]"           data-crew-target="pilotInput" />
+      <input type="hidden" name="crew[astrogator]"      data-crew-target="astrogatorInput" />
+      <input type="hidden" name="crew[engineer]"        data-crew-target="engineerInput" />
+      <input type="hidden" name="crew[maintenance]"     data-crew-target="maintenanceInput" />
+      <input type="hidden" name="crew[gunner]"          data-crew-target="gunnerInput" />
+      <input type="hidden" name="crew[administrator]"   data-crew-target="administratorInput" />
+      <input type="hidden" name="crew[sensor_operator]" data-crew-target="sensorOperatorInput" />
+      <input type="hidden" name="crew[medic]"           data-crew-target="medicInput" />
+      <input type="hidden" name="crew[officer]"         data-crew-target="officerInput" />
+      <input type="hidden" name="crew[total_crew]"      data-crew-target="totalCrewInput" />
+      <input type="hidden" name="crew[total_salary]"    data-crew-target="totalSalaryInput" />
+      <input type="hidden" name="crew[ship_type]"       data-crew-target="shipTypeInput" />
+
+      <div class="form-actions">
+        <%= link_to "← Back to Optional Systems", step_ship_path(@ship, step_number: 9),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Save and continue to Staterooms →", class: "btn btn-primary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>
