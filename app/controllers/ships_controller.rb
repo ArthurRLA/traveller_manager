@@ -30,24 +30,41 @@ class ShipsController < ApplicationController
     @step_number = params[:step_number].to_i
     @step_name   = Ship::STEPS[@step_number]
 
+    if @step_number == 13
+      @total_tonnage_used = calculate_total_tonnage(@ship)
+      @total_cost         = calculate_total_cost(@ship)
+    end
+
     render "ships/steps/step_#{@step_number}"
   end
 
   def update_step
     @step_number = params[:step_number].to_i
+    step_data    = step_params(@step_number)
 
-    step_data = step_params(@step_number)
+    if @step_number == 13
+      total_tonnage = calculate_total_tonnage(@ship)
+      total_cost    = calculate_total_cost(@ship)
+
+      step_data = {
+        "summary" => {
+          "total_tonnage_used" => total_tonnage,
+          "total_cost"         => total_cost,
+          "monthly_maintenance"=> (total_cost / 12000).to_i
+        }
+      }
+    end
+
     updated_build_data = @ship.build_data.merge(step_data)
-
-    next_step = @step_number + 1
+    next_step          = @step_number + 1
 
     if @ship.update(
-      build_data: updated_build_data,
+      build_data:   updated_build_data,
       current_step: [next_step, Ship::TOTAL_STEPS].min,
-      status: next_step > Ship::TOTAL_STEPS ? :completed : :in_progress
+      status:       next_step > Ship::TOTAL_STEPS ? :completed : :in_progress
     )
       if next_step > Ship::TOTAL_STEPS
-        redirect_to @ship, notice: "Ship completed!"
+        redirect_to ships_path, notice: "#{@ship.name} completed successfully!"
       else
         redirect_to step_ship_path(@ship, step_number: next_step)
       end
@@ -189,8 +206,42 @@ class ShipsController < ApplicationController
         "tonnage"   => cargo[:tonnage].to_i,
         "available" => cargo[:available].to_i
       }}
+    when 13
+      {}
     else
       {}
     end
   end
+end
+
+def calculate_total_tonnage(ship)
+  bd = ship.build_data
+  [
+    bd.dig("drives", "manoeuvre", "tonnage").to_i,
+    bd.dig("drives", "jump",      "tonnage").to_i,
+    bd.dig("power_plant",         "tonnage").to_i,
+    bd.dig("fuel",                "total_fuel").to_i,
+    bd.dig("bridge",              "tonnage").to_i,
+    bd.dig("sensors",             "tonnage").to_i,
+    bd.dig("weapons",             "total_tonnage").to_i,
+    bd.dig("optional_systems",    "total_tonnage").to_i,
+    bd.dig("staterooms",          "total_tonnage").to_i,
+    bd.dig("cargo",               "tonnage").to_i
+  ].sum
+end
+
+def calculate_total_cost(ship)
+  bd = ship.build_data
+  [
+    bd.dig("hull",             "cost").to_i,
+    bd.dig("drives", "manoeuvre", "cost").to_i,
+    bd.dig("drives", "jump",      "cost").to_i,
+    bd.dig("power_plant",      "cost").to_i,
+    bd.dig("bridge",           "cost").to_i,
+    bd.dig("computer",         "total_cost").to_i,
+    bd.dig("sensors",          "cost").to_i,
+    bd.dig("weapons",          "total_cost").to_i,
+    bd.dig("optional_systems", "total_cost").to_i,
+    bd.dig("staterooms",       "total_cost").to_i
+  ].sum
 end

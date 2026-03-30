@@ -1,0 +1,248 @@
+<div class="container">
+  <%= render "ships/wizard_nav" %>
+
+  <div class="step-content">
+    <h2>Step 13: Finalise Design</h2>
+
+    <div class="ship-complete-header">
+      <h3><%= @ship.name %></h3>
+      <span class="status-badge <%= @ship.status %>">
+        <%= @ship.status.humanize %>
+      </span>
+    </div>
+
+    <%# Hull Summary %>
+    <div class="summary-section">
+      <h3>Hull</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Configuration</label>
+          <span><%= @ship.build_data.dig("hull", "configuration")&.humanize %></span>
+        </div>
+        <div class="result-item">
+          <label>Hull Points</label>
+          <span><%= @ship.build_data.dig("hull", "hull_points").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Hull Cost</label>
+          <span>Cr<%= number_with_delimiter(@ship.build_data.dig("hull", "cost").to_i) %></span>
+        </div>
+      </div>
+    </div>
+
+    <%# Drives Summary %>
+    <div class="summary-section">
+      <h3>Drives</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Manoeuvre Drive</label>
+          <span>Thrust <%= @ship.build_data.dig("drives", "manoeuvre", "rating").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>M-Drive Tonnage</label>
+          <span><%= @ship.build_data.dig("drives", "manoeuvre", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Jump Drive</label>
+          <span>Jump-<%= @ship.build_data.dig("drives", "jump", "rating").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>J-Drive Tonnage</label>
+          <span><%= @ship.build_data.dig("drives", "jump", "tonnage").to_i %> tons</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Power Plant Summary %>
+    <div class="summary-section">
+      <h3>Power Plant</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Type</label>
+          <span><%= @ship.build_data.dig("power_plant", "type")&.humanize %></span>
+        </div>
+        <div class="result-item">
+          <label>Tonnage</label>
+          <span><%= @ship.build_data.dig("power_plant", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Power Generated</label>
+          <span><%= @ship.build_data.dig("power_plant", "power_generated").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Cost</label>
+          <span>Cr<%= number_with_delimiter(@ship.build_data.dig("power_plant", "cost").to_i) %></span>
+        </div>
+      </div>
+    </div>
+
+    <%# Fuel Summary %>
+    <div class="summary-section">
+      <h3>Fuel</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Jump Fuel</label>
+          <span><%= @ship.build_data.dig("fuel", "jump_fuel").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Power Plant Fuel</label>
+          <span><%= @ship.build_data.dig("fuel", "power_fuel").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Total Fuel</label>
+          <span><%= @ship.build_data.dig("fuel", "total_fuel").to_i %> tons</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Bridge & Computer Summary %>
+    <div class="summary-section">
+      <h3>Bridge & Computer</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Bridge Type</label>
+          <span><%= @ship.build_data.dig("bridge", "type")&.humanize %></span>
+        </div>
+        <div class="result-item">
+          <label>Bridge Tonnage</label>
+          <span><%= @ship.build_data.dig("bridge", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Computer</label>
+          <span><%= @ship.build_data.dig("computer", "primary", "model")&.humanize %></span>
+        </div>
+        <div class="result-item">
+          <label>Sensors</label>
+          <span><%= @ship.build_data.dig("sensors", "type")&.humanize %></span>
+        </div>
+      </div>
+    </div>
+
+    <%# Weapons Summary %>
+    <div class="summary-section">
+      <h3>Weapons</h3>
+      <% weapons = @ship.build_data.dig("weapons", "data") || [] %>
+      <% if weapons.any? %>
+        <table class="weapons-table">
+          <thead>
+            <tr>
+              <th>Mount</th>
+              <th>Weapon</th>
+              <th>Damage</th>
+              <th>Range</th>
+              <th>Tons</th>
+              <th>Power</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% weapons.each do |weapon| %>
+              <tr>
+                <td><%= weapon["mountName"] %></td>
+                <td><%= weapon["weaponName"] %></td>
+                <td><%= weapon["damage"] %></td>
+                <td><%= weapon["range"] %></td>
+                <td><%= weapon["tons"] %></td>
+                <td><%= weapon["power"] %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="empty-state">No weapons installed.</p>
+      <% end %>
+    </div>
+
+    <%# Crew Summary %>
+    <div class="summary-section">
+      <h3>Crew</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Ship Type</label>
+          <span><%= @ship.build_data.dig("crew", "ship_type")&.humanize %></span>
+        </div>
+        <div class="result-item">
+          <label>Total Crew</label>
+          <span><%= @ship.build_data.dig("crew", "total_crew").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Monthly Salary</label>
+          <span>Cr<%= number_with_delimiter(@ship.build_data.dig("crew", "total_salary").to_i) %></span>
+        </div>
+      </div>
+    </div>
+
+    <%# Staterooms Summary %>
+    <div class="summary-section">
+      <h3>Staterooms</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Standard Staterooms</label>
+          <span><%= @ship.build_data.dig("staterooms", "standard").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>High Staterooms</label>
+          <span><%= @ship.build_data.dig("staterooms", "high").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Luxury Staterooms</label>
+          <span><%= @ship.build_data.dig("staterooms", "luxury").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Low Berths</label>
+          <span><%= @ship.build_data.dig("staterooms", "low_berths").to_i %></span>
+        </div>
+        <div class="result-item">
+          <label>Common Areas</label>
+          <span><%= @ship.build_data.dig("staterooms", "common_area").to_i %> tons</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Cargo Summary %>
+    <div class="summary-section">
+      <h3>Cargo</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Cargo Space</label>
+          <span><%= @ship.build_data.dig("cargo", "tonnage").to_i %> tons</span>
+        </div>
+      </div>
+    </div>
+
+    <%# Final Totals %>
+    <div class="summary-section totals-section">
+      <h3>Final Totals</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <label>Total Tonnage Used</label>
+          <span><%= @total_tonnage_used %> / <%= @ship.build_data.dig("hull", "tonnage").to_i %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Remaining Tonnage</label>
+          <span><%= @ship.build_data.dig("hull", "tonnage").to_i - @total_tonnage_used %> tons</span>
+        </div>
+        <div class="result-item">
+          <label>Total Ship Cost</label>
+          <span>Cr<%= number_with_delimiter(@total_cost) %></span>
+        </div>
+        <div class="result-item">
+          <label>Monthly Maintenance</label>
+          <span>Cr<%= number_with_delimiter((@total_cost / 12000).to_i) %></span>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: update_step_ship_path(@ship, step_number: 13), method: :patch do |f| %>
+      <div class="form-actions">
+        <%= link_to "← Back to Cargo", step_ship_path(@ship, step_number: 12),
+            class: "btn btn-secondary" %>
+        <%= f.submit "Complete Ship Design", class: "btn btn-primary btn-large" %>
+      </div>
+    <% end %>
+
+  </div>
+</div>
