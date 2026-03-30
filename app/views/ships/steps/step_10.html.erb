@@ -38,9 +38,72 @@
         <select name="crew[ship_type]" class="form-control"
                 data-crew-target="shipType"
                 data-action="change->crew#calculate">
-          <option value="commercial">Commercial</option>
-          <option value="military">Military</option>
+          <option value="commercial" <%= "selected" if @ship.build_data.dig("crew", "ship_type") == "commercial" %>>
+            Commercial
+          </option>
+          <option value="military" <%= "selected" if @ship.build_data.dig("crew", "ship_type") == "military" %>>
+            Military
+          </option>
         </select>
+      </div>
+
+      <h3>Optional Positions</h3>
+      <div class="info-text">
+        <p>The following positions depend on the number of people aboard. 
+           Enable them and fill in the details as needed.</p>
+      </div>
+
+      <div class="optional-crew-section">
+        <div class="form-group checkbox-inline">
+          <label>
+            <input type="checkbox"
+                   <%= "checked" if @ship.build_data.dig("crew", "include_steward") %>
+                   data-crew-target="includeSteward"
+                   data-action="change->crew#calculate" />
+            Include Steward
+            <small>(1 per 10 High or 100 Middle passengers)</small>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>High Passengers</label>
+          <input type="number" name="crew[high_passengers]" min="0" step="1"
+                 value="<%= @ship.build_data.dig('crew', 'high_passengers') || 0 %>"
+                 class="form-control"
+                 data-crew-target="highPassengers"
+                 data-action="input->crew#calculate" />
+        </div>
+
+        <div class="form-group">
+          <label>Middle Passengers</label>
+          <input type="number" name="crew[middle_passengers]" min="0" step="1"
+                 value="<%= @ship.build_data.dig('crew', 'middle_passengers') || 0 %>"
+                 class="form-control"
+                 data-crew-target="middlePassengers"
+                 data-action="input->crew#calculate" />
+        </div>
+
+        <div class="form-group checkbox-inline">
+          <label>
+            <input type="checkbox"
+                   <%= "checked" if @ship.build_data.dig("crew", "include_medic") %>
+                   data-crew-target="includeMedic"
+                   data-action="change->crew#calculate" />
+            Include Medic
+            <small>(1 per 120 crew and passengers)</small>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-inline">
+          <label>
+            <input type="checkbox"
+                   <%= "checked" if @ship.build_data.dig("crew", "include_officer") %>
+                   data-crew-target="includeOfficer"
+                   data-action="change->crew#calculate" />
+            Include Officers
+            <small>(1 per 20 crew commercial, 1 per 10 crew military)</small>
+          </label>
+        </div>
       </div>
 
       <h3>Crew Requirements</h3>
@@ -57,7 +120,7 @@
           <tbody>
             <tr>
               <td>Captain</td>
-              <td>-</td>
+              <td>—</td>
               <td>Cr10,000</td>
               <td><span data-crew-target="captain">0</span></td>
             </tr>
@@ -83,7 +146,10 @@
               <td>Maintenance</td>
               <td>Mechanic</td>
               <td>Cr1,000</td>
-              <td><span data-crew-target="maintenance">0</span></td>
+              <td>
+                <span data-crew-target="maintenance">0</span>
+                <small class="muted">(required from 1,000 tons)</small>
+              </td>
             </tr>
             <tr>
               <td>Gunner</td>
@@ -95,13 +161,25 @@
               <td>Administrator</td>
               <td>Admin</td>
               <td>Cr1,500</td>
-              <td><span data-crew-target="administrator">0</span></td>
+              <td>
+                <span data-crew-target="administrator">0</span>
+                <small class="muted">(required from 2,000 tons)</small>
+              </td>
             </tr>
             <tr>
               <td>Sensor Operator</td>
               <td>Electronics (sensors)</td>
               <td>Cr4,000</td>
-              <td><span data-crew-target="sensorOperator">0</span></td>
+              <td>
+                <span data-crew-target="sensorOperator">0</span>
+                <small class="muted">(required from 7,500 tons)</small>
+              </td>
+            </tr>
+            <tr>
+              <td>Steward</td>
+              <td>Steward</td>
+              <td>Cr2,000</td>
+              <td><span data-crew-target="steward">0</span></td>
             </tr>
             <tr>
               <td>Medic</td>
@@ -126,19 +204,20 @@
         </table>
       </div>
 
-      <input type="hidden" name="crew[captain]"         data-crew-target="captainInput" />
-      <input type="hidden" name="crew[pilot]"           data-crew-target="pilotInput" />
-      <input type="hidden" name="crew[astrogator]"      data-crew-target="astrogatorInput" />
-      <input type="hidden" name="crew[engineer]"        data-crew-target="engineerInput" />
-      <input type="hidden" name="crew[maintenance]"     data-crew-target="maintenanceInput" />
-      <input type="hidden" name="crew[gunner]"          data-crew-target="gunnerInput" />
-      <input type="hidden" name="crew[administrator]"   data-crew-target="administratorInput" />
-      <input type="hidden" name="crew[sensor_operator]" data-crew-target="sensorOperatorInput" />
-      <input type="hidden" name="crew[medic]"           data-crew-target="medicInput" />
-      <input type="hidden" name="crew[officer]"         data-crew-target="officerInput" />
-      <input type="hidden" name="crew[total_crew]"      data-crew-target="totalCrewInput" />
-      <input type="hidden" name="crew[total_salary]"    data-crew-target="totalSalaryInput" />
-      <input type="hidden" name="crew[ship_type]"       data-crew-target="shipTypeInput" />
+      <input type="hidden" name="crew[captain]"          data-crew-target="captainInput" />
+      <input type="hidden" name="crew[pilot]"            data-crew-target="pilotInput" />
+      <input type="hidden" name="crew[astrogator]"       data-crew-target="astrogatorInput" />
+      <input type="hidden" name="crew[engineer]"         data-crew-target="engineerInput" />
+      <input type="hidden" name="crew[maintenance]"      data-crew-target="maintenanceInput" />
+      <input type="hidden" name="crew[gunner]"           data-crew-target="gunnerInput" />
+      <input type="hidden" name="crew[administrator]"    data-crew-target="administratorInput" />
+      <input type="hidden" name="crew[sensor_operator]"  data-crew-target="sensorOperatorInput" />
+      <input type="hidden" name="crew[steward]"          data-crew-target="stewardInput" />
+      <input type="hidden" name="crew[medic]"            data-crew-target="medicInput" />
+      <input type="hidden" name="crew[officer]"          data-crew-target="officerInput" />
+      <input type="hidden" name="crew[total_crew]"       data-crew-target="totalCrewInput" />
+      <input type="hidden" name="crew[total_salary]"     data-crew-target="totalSalaryInput" />
+      <input type="hidden" name="crew[ship_type]"        data-crew-target="shipTypeInput" />
 
       <div class="form-actions">
         <%= link_to "← Back to Optional Systems", step_ship_path(@ship, step_number: 9),

@@ -178,27 +178,37 @@ class ShipsController < ApplicationController
       crew = params.require(:crew).permit(
         :ship_type, :captain, :pilot, :astrogator,
         :engineer, :maintenance, :gunner, :administrator,
-        :sensor_operator, :medic, :officer,
-        :total_crew, :total_salary
+        :sensor_operator, :steward, :medic, :officer,
+        :total_crew, :total_salary,
+        :high_passengers, :middle_passengers
       )
-      { "crew" => crew.to_h.transform_values { |v|
+      {
+        "crew" => crew.to_h.transform_values { |v|
           v.is_a?(String) && v.match?(/\A\d+\z/) ? v.to_i : v
-        }
+        }.merge(
+          "include_steward" => params.dig(:crew, :include_steward) == "on",
+          "include_medic"   => params.dig(:crew, :include_medic)   == "on",
+          "include_officer" => params.dig(:crew, :include_officer) == "on"
+        )
       }
     when 11
       sr = params.require(:staterooms).permit(
-        :standard, :high, :luxury, :low_berths,
-        :common_area, :total_tonnage, :total_cost, :total_power
+        :standard, :double_occupancy, :high, :luxury,
+        :low_berths, :emergency_low_berths, :common_area,
+        :total_tonnage, :total_cost, :total_power, :total_capacity
       )
       { "staterooms" => {
-        "standard"      => sr[:standard].to_i,
-        "high"          => sr[:high].to_i,
-        "luxury"        => sr[:luxury].to_i,
-        "low_berths"    => sr[:low_berths].to_i,
-        "common_area"   => sr[:common_area].to_i,
-        "total_tonnage" => sr[:total_tonnage].to_i,
-        "total_cost"    => sr[:total_cost].to_i,
-        "total_power"   => sr[:total_power].to_i
+        "standard"            => sr[:standard].to_i,
+        "double_occupancy"    => sr[:double_occupancy].to_i,
+        "high"                => sr[:high].to_i,
+        "luxury"              => sr[:luxury].to_i,
+        "low_berths"          => sr[:low_berths].to_i,
+        "emergency_low_berths"=> sr[:emergency_low_berths].to_i,
+        "common_area"         => sr[:common_area].to_i,
+        "total_tonnage"       => sr[:total_tonnage].to_f.ceil,
+        "total_cost"          => sr[:total_cost].to_i,
+        "total_power"         => sr[:total_power].to_i,
+        "total_capacity"      => sr[:total_capacity].to_i
       }}
     when 12
       cargo = params.require(:cargo).permit(:tonnage, :available)
