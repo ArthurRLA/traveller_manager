@@ -60,7 +60,7 @@ class ShipsController < ApplicationController
 
     if @ship.update(
       build_data:   updated_build_data,
-      current_step: [next_step, Ship::TOTAL_STEPS].min,
+      current_step: [ next_step, Ship::TOTAL_STEPS ].min,
       status:       next_step > Ship::TOTAL_STEPS ? :completed : :in_progress
     )
       if next_step > Ship::TOTAL_STEPS
@@ -93,7 +93,7 @@ class ShipsController < ApplicationController
         "configuration" => hull[:configuration],
         "cost"          => hull[:cost].to_i,
         "hull_points"   => hull[:hull_points].to_i
-      }}
+      } }
     when 2
       drives = params.require(:drives).permit(
         manoeuvre: %i[rating tonnage cost power],
@@ -102,7 +102,7 @@ class ShipsController < ApplicationController
       { "drives" => {
         "manoeuvre" => drives[:manoeuvre].transform_values(&:to_i),
         "jump"      => drives[:jump].transform_values(&:to_i)
-      }}
+      } }
     when 3
       pp = params.require(:power_plant).permit(:type, :tonnage, :cost, :power_generated)
       { "power_plant" => {
@@ -110,14 +110,14 @@ class ShipsController < ApplicationController
         "tonnage"         => pp[:tonnage].to_i,
         "cost"            => pp[:cost].to_i,
         "power_generated" => pp[:power_generated].to_i
-      }}
+      } }
     when 4
       fuel = params.require(:fuel).permit(:jump_fuel, :power_fuel, :total_fuel)
       { "fuel" => {
         "jump_fuel"  => fuel[:jump_fuel].to_i,
         "power_fuel" => fuel[:power_fuel].to_i,
         "total_fuel" => fuel[:total_fuel].to_i
-      }}
+      } }
     when 5
       bridge = params.require(:bridge).permit(:type, :tonnage, :cost, :holographic)
       { "bridge" => {
@@ -125,7 +125,7 @@ class ShipsController < ApplicationController
         "tonnage"     => bridge[:tonnage].to_i,
         "cost"        => bridge[:cost].to_i,
         "holographic" => bridge[:holographic] == "1"
-      }}
+      } }
     when 6
       computer = params.require(:computer).permit(
         :total_cost,
@@ -144,7 +144,7 @@ class ShipsController < ApplicationController
           "cost"  => computer.dig(:backup, :cost).to_i
         },
         "total_cost" => computer[:total_cost].to_i
-      }}
+      } }
     when 7
       sensors = params.require(:sensors).permit(:type, :tonnage, :cost, :power, :dm)
       { "sensors" => {
@@ -153,7 +153,7 @@ class ShipsController < ApplicationController
         "cost"    => sensors[:cost].to_i,
         "power"   => sensors[:power].to_i,
         "dm"      => sensors[:dm].to_i
-      }}
+      } }
     when 8
       weapons = params.require(:weapons).permit(
         :data, :total_tonnage, :total_cost, :total_power
@@ -163,7 +163,7 @@ class ShipsController < ApplicationController
         "total_tonnage" => weapons[:total_tonnage].to_i,
         "total_cost"    => weapons[:total_cost].to_i,
         "total_power"   => weapons[:total_power].to_i
-      }}
+      } }
     when 9
       opt = params.require(:optional_systems).permit(
         :data, :total_tonnage, :total_cost, :total_power
@@ -173,7 +173,7 @@ class ShipsController < ApplicationController
         "total_tonnage" => opt[:total_tonnage].to_i,
         "total_cost"    => opt[:total_cost].to_i,
         "total_power"   => opt[:total_power].to_i
-      }}
+      } }
     when 10
       crew = params.require(:crew).permit(
         :ship_type, :captain, :pilot, :astrogator,
@@ -209,13 +209,13 @@ class ShipsController < ApplicationController
         "total_cost"          => sr[:total_cost].to_i,
         "total_power"         => sr[:total_power].to_i,
         "total_capacity"      => sr[:total_capacity].to_i
-      }}
+      } }
     when 12
       cargo = params.require(:cargo).permit(:tonnage, :available)
       { "cargo" => {
         "tonnage"   => cargo[:tonnage].to_i,
         "available" => cargo[:available].to_i
-      }}
+      } }
     when 13
       {}
     else

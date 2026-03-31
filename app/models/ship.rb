@@ -6,9 +6,9 @@ class Ship < ApplicationRecord
   attribute :build_data, :jsonb, default: {}
 
   validates :name, presence: true
-  validates :current_step, numericality: { 
-    greater_than_or_equal_to: 1, 
-    less_than_or_equal_to: TOTAL_STEPS 
+  validates :current_step, numericality: {
+    greater_than_or_equal_to: 1,
+    less_than_or_equal_to: TOTAL_STEPS
   }
 
   STEPS = {
