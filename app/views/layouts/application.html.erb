@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Traveller Manager" %></title>
+    <title>Traveller Manager</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "traveller", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
+    <nav class="navbar">
+      <a href="/" class="navbar-brand">
+        <span>Traveller</span> Manager
+      </a>
+      <ul class="navbar-links">
+        <li><a href="/">Hub</a></li>
+        <li><a href="/ships">My Ships</a></li>
+        <li><a href="/ships/new">New Ship</a></li>
+      </ul>
+    </nav>
+
+    <% if notice.present? %>
+      <div class="flash notice"><%= notice %></div>
+    <% end %>
+    <% if alert.present? %>
+      <div class="flash alert"><%= alert %></div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

@@ -1,0 +1,172 @@
+<div class="hub-wrapper">
+
+  <div class="hub-hero">
+    <div class="hub-hero-content">
+      <div class="hub-hero-label">Mongoose Traveller 2nd Edition</div>
+      <h1 class="hub-hero-title">
+        <span>Traveller</span> Manager
+      </h1>
+      <p class="hub-hero-subtitle">
+        Your complete toolkit for the Far Future. Design ships, generate star systems,
+        manage campaigns and more — all in one place.
+      </p>
+    </div>
+    <div class="hub-hero-badge">
+      <div class="hub-hero-badge-inner">
+        <span class="hub-hero-badge-tl">TL</span>
+        <span class="hub-hero-badge-number">15</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hub-divider">
+    <span>Select a Module</span>
+  </div>
+
+  <%# Feature Grid %>
+  <div class="hub-grid">
+
+    <%# Ship Builder — ACTIVE %>
+    <%= link_to ships_path, class: "hub-card hub-card--active" do %>
+      <div class="hub-card-header">
+        <div class="hub-card-icon">⬡</div>
+        <div class="hub-card-status hub-card-status--available">Available</div>
+      </div>
+      <h2 class="hub-card-title">Ship Builder</h2>
+      <p class="hub-card-desc">
+        Design and build spacecraft following the High Guard rules.
+        Configure hull, drives, weapons, crew and more through a
+        step-by-step wizard.
+      </p>
+      <ul class="hub-card-features">
+        <li>13-step design wizard</li>
+        <li>Full High Guard ruleset</li>
+        <li>Real-time calculations</li>
+        <li>Save & resume anytime</li>
+      </ul>
+      <div class="hub-card-cta">
+        Enter Module →
+      </div>
+    <% end %>
+
+    <%# Star System Generator — PLACEHOLDER %>
+    <div class="hub-card hub-card--placeholder">
+      <div class="hub-card-header">
+        <div class="hub-card-icon">✦</div>
+        <div class="hub-card-status hub-card-status--soon">Coming Soon</div>
+      </div>
+      <h2 class="hub-card-title">Star System Generator</h2>
+      <p class="hub-card-desc">
+        Generate complete star systems following the World Creation
+        rules. Stars, worlds, trade codes, UWP profiles and more.
+      </p>
+      <ul class="hub-card-features">
+        <li>Random system generation</li>
+        <li>UWP profiles</li>
+        <li>Trade code assignment</li>
+        <li>Subsector mapping</li>
+      </ul>
+      <div class="hub-card-cta hub-card-cta--locked">
+        In Development
+      </div>
+    </div>
+
+    <%# NPC Generator — PLACEHOLDER %>
+    <div class="hub-card hub-card--placeholder">
+      <div class="hub-card-header">
+        <div class="hub-card-icon">◈</div>
+        <div class="hub-card-status hub-card-status--soon">Coming Soon</div>
+      </div>
+      <h2 class="hub-card-title">NPC Generator</h2>
+      <p class="hub-card-desc">
+        Quickly generate Non-Player Characters with careers,
+        skills, equipment and personality traits for your campaign.
+      </p>
+      <ul class="hub-card-features">
+        <li>Career-based generation</li>
+        <li>Skills & characteristics</li>
+        <li>Equipment loadouts</li>
+        <li>Personality traits</li>
+      </ul>
+      <div class="hub-card-cta hub-card-cta--locked">
+        In Development
+      </div>
+    </div>
+
+    <%# Trade Calculator — PLACEHOLDER %>
+    <div class="hub-card hub-card--placeholder">
+      <div class="hub-card-header">
+        <div class="hub-card-icon">◉</div>
+        <div class="hub-card-status hub-card-status--soon">Coming Soon</div>
+      </div>
+      <h2 class="hub-card-title">Trade Calculator</h2>
+      <p class="hub-card-desc">
+        Calculate trade routes, cargo values and speculative
+        trading opportunities between star systems.
+      </p>
+      <ul class="hub-card-features">
+        <li>Trade route planning</li>
+        <li>Speculative cargo</li>
+        <li>Profit calculations</li>
+        <li>Freight & passengers</li>
+      </ul>
+      <div class="hub-card-cta hub-card-cta--locked">
+        In Development
+      </div>
+    </div>
+
+    <%# Combat Tracker — PLACEHOLDER %>
+    <div class="hub-card hub-card--placeholder">
+      <div class="hub-card-header">
+        <div class="hub-card-icon">⊕</div>
+        <div class="hub-card-status hub-card-status--soon">Coming Soon</div>
+      </div>
+      <h2 class="hub-card-title">Combat Tracker</h2>
+      <p class="hub-card-desc">
+        Track space combat encounters. Manage initiative, hull
+        points, damage and critical hits across multiple ships.
+      </p>
+      <ul class="hub-card-features">
+        <li>Initiative tracking</li>
+        <li>Hull & damage tracking</li>
+        <li>Critical hit tables</li>
+        <li>Multi-ship encounters</li>
+      </ul>
+      <div class="hub-card-cta hub-card-cta--locked">
+        In Development
+      </div>
+    </div>
+
+    <%# Campaign Manager — PLACEHOLDER %>
+    <div class="hub-card hub-card--placeholder">
+      <div class="hub-card-header">
+        <div class="hub-card-icon">⬡</div>
+        <div class="hub-card-status hub-card-status--soon">Coming Soon</div>
+      </div>
+      <h2 class="hub-card-title">Campaign Manager</h2>
+      <p class="hub-card-desc">
+        Organise your Traveller campaign. Track sessions, NPCs,
+        locations, factions and ongoing plot threads.
+      </p>
+      <ul class="hub-card-features">
+        <li>Session notes</li>
+        <li>NPC tracking</li>
+        <li>Location database</li>
+        <li>Faction management</li>
+      </ul>
+      <div class="hub-card-cta hub-card-cta--locked">
+        In Development
+      </div>
+    </div>
+
+  </div>
+
+  <%# Disclamer %>
+  <div class="hub-footer">
+    <p>
+      Based on <strong>Mongoose Traveller 2nd Edition</strong> rules.
+      This is an unofficial fan tool, not affiliated with Mongoose Publishing.
+    </p>
+  </div>
+
+</div>

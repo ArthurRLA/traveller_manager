@@ -1,12 +1,19 @@
-<div class="container">
-  <h1>Name your ship</h1>
+<div style="max-width: 600px; margin: 40px auto; padding: 0 16px;">
+  <div class="summary-section">
+    <h2>Name your ship</h2>
 
-  <%= form_with model: @ship do |f| %>
-    <div class="form-group">
-      <%= f.label :name, "Ship Name" %>
-      <%= f.text_field :name, placeholder: "Write your's ship name", class: "form-control" %>
-    </div>
+    <%= form_with model: @ship do |f| %>
+      <div class="form-group">
+        <%= f.label :name, "Ship Name", class: "form-label" %>
+        <%= f.text_field :name,
+            placeholder: "Enter ship name...",
+            class: "form-control" %>
+      </div>
 
-    <%= f.submit "Start creating your ship", class: "btn btn-primary" %>
-  <% end %>
+      <div class="form-actions">
+        <%= link_to "← Back", ships_path, class: "btn btn-secondary" %>
+        <%= f.submit "Start Building →", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
 </div>
