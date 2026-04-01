@@ -2,52 +2,261 @@
   <%= render "ships/wizard_nav" %>
 
   <div class="step-content">
-    <h2>Step 1: Hull Configuration</h2>
+    <h2>Step 1: Create a Hull</h2>
 
     <%= form_with url: update_step_ship_path(@ship, step_number: 1), method: :patch do |f| %>
 
-      <div class="form-group">
-        <label>Hull Tonnage</label>
-        <input type="number" name="hull[tonnage]" min="5" step="1"
-            value="<%= @ship.build_data.dig('hull', 'tonnage') || 100 %>"
-            class="form-control"
-            data-hull-target="tonnage"
-            data-action="input->hull#calculate" />
-        <small>Minimum 5 tons. Jump-capable ships must be at least 100 tons.</small>
+      <div class="summary-section">
+        <h3>Basic Hull</h3>
+        <p class="info-text">
+          A basic hull costs Cr50,000 per ton. Minimum 5 tons.
+          Jump-capable ships must be at least 100 tons.
+          Ships have 1 Hull Point per full 2.5 tons.
+        </p>
+
+        <div class="form-group">
+          <label>Hull Tonnage</label>
+          <input type="number" name="hull[tonnage]" min="5" step="1"
+                 value="<%= @ship.build_data.dig('hull', 'tonnage') || 100 %>"
+                 class="form-control"
+                 data-hull-target="tonnage"
+                 data-action="input->hull#calculate" />
+          <small>Minimum 5 tons. Jump-capable ships must be at least 100 tons.</small>
+        </div>
+
+        <div class="form-group">
+          <label>Hull Configuration</label>
+          <select name="hull[configuration]" class="form-control"
+                  data-hull-target="configuration"
+                  data-action="change->hull#calculate">
+            <% [
+              ["Standard — Boxy, cylindrical (yacht, liner)",                          "standard"],
+              ["Streamlined — Needle, wedge, disc (scout, free trader)",               "streamlined"],
+              ["Sphere — Sphere or large spheroid (express boat, mercenary cruiser)",  "sphere"],
+              ["Close Structure — Boxes joined by struts (Gazelle, Chrysanthemum)",    "close_structure"],
+              ["Dispersed Structure — Irregular shapes, rings (Lab Ship, Donosev)",    "dispersed_structure"],
+              ["Planetoid — Hollowed asteroid",                                        "planetoid"],
+              ["Buffered Planetoid — Reinforced hollowed asteroid",                    "buffered_planetoid"]
+            ].each do |label, value| %>
+              <option value="<%= value %>"
+                <%= "selected" if @ship.build_data.dig("hull", "configuration") == value %>>
+                <%= label %>
+              </option>
+            <% end %>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Hull Configuration</label>
-        <select name="hull[configuration]" class="form-control"
-                data-hull-target="configuration"
-                data-action="change->hull#calculate">
-          <% [
-            ["Standard",            "standard"],
-            ["Streamlined",         "streamlined"],
-            ["Sphere",              "sphere"],
-            ["Close Structure",     "close_structure"],
-            ["Dispersed Structure", "dispersed_structure"],
-            ["Planetoid",           "planetoid"],
-            ["Buffered Planetoid",  "buffered_planetoid"]
-          ].each do |label, value| %>
-            <option value="<%= value %>"
-              <%= "selected" if @ship.build_data.dig("hull", "configuration") == value %>>
-              <%= label %>
-            </option>
-          <% end %>
-        </select>
+      <div class="summary-section">
+        <h3>Specialised Hull Type</h3>
+        <p class="info-text">
+          Optional modifications to the hull structure itself.
+          Cannot be combined with Planetoid or Buffered Planetoid hulls except where noted.
+        </p>
+
+        <div class="form-group">
+          <label>Specialised Hull Type</label>
+          <select name="hull[specialised_type]" class="form-control"
+                  data-hull-target="specialisedType"
+                  data-action="change->hull#calculate">
+            <% [
+              ["None",                                                                              "none"],
+              ["Reinforced Hull — +50% hull cost, +10% Hull Points",                               "reinforced"],
+              ["Light Hull — -25% hull cost, -10% Hull Points",                                    "light"],
+              ["Military Hull — +25% hull cost, double armour rating (capital ships 5,000t+ only)","military"],
+              ["Non-Gravity Hull — -50% hull cost, half base power. Max 500,000 tons",             "non_gravity"]
+            ].each do |label, value| %>
+              <option value="<%= value %>"
+                <%= "selected" if @ship.build_data.dig("hull", "specialised_type") == value %>>
+                <%= label %>
+              </option>
+            <% end %>
+          </select>
+        </div>
       </div>
 
-      <div class="hull-results">
+      <div class="summary-section">
+        <h3>Additional Hull Type</h3>
+        <p class="info-text">
+          Special structural configurations for gravity generation or modular operation.
+        </p>
+
+        <div class="form-group">
+          <label>Additional Hull Type</label>
+          <select name="hull[additional_type]" class="form-control"
+                  data-hull-target="additionalType"
+                  data-action="change->hull#calculate">
+            <% [
+              ["None",                                                                                    "none"],
+              ["Double Hull — Spinning outer hull for gravity. Outer hull min 60 tons. +1% cost/% spun", "double_hull"],
+              ["Hamster Cage — Spinning rings for gravity. Min 15m radius. +2% cost/% spun",             "hamster_cage"],
+              ["Breakaway Hull — Ship splits into independent sections. 2% combined tonnage for bulkheads","breakaway"]
+            ].each do |label, value| %>
+              <option value="<%= value %>"
+                <%= "selected" if @ship.build_data.dig("hull", "additional_type") == value %>>
+                <%= label %>
+              </option>
+            <% end %>
+          </select>
+        </div>
+
+        <div id="additional-hull-details" style="display:none">
+          <div class="form-group">
+            <label>Percentage of Hull Used for Spinning/Breakaway (%)</label>
+            <input type="number" name="hull[additional_type_percent]" min="0" max="100" step="1"
+                   value="<%= @ship.build_data.dig('hull', 'additional_type_percent') || 0 %>"
+                   class="form-control"
+                   data-hull-target="additionalTypePercent"
+                   data-action="input->hull#calculate" />
+            <small>
+              Double Hull: percentage of hull that spins (+1% cost per %).<br>
+              Hamster Cage: percentage of hull used as rings (+2% cost per %).<br>
+              Breakaway: percentage that breaks away (consumes 2% combined tonnage for bulkheads).
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-section">
+        <h3>Install Armour</h3>
+        <p class="info-text">
+          All hulls start with Protection +0. Armour consumes hull tonnage.
+          Planetoid hulls start with Protection +2 (Buffered: +4).
+        </p>
+
+        <div class="form-group">
+          <label>Armour Type</label>
+          <select name="hull[armour_type]" class="form-control"
+                  data-hull-target="armourType"
+                  data-action="change->hull#calculate">
+            <% [
+              ["None",                                                                                      "none"],
+              ["Titanium Steel (TL7) — 2.5% per point, Cr50,000/ton. Max: TL or 9",                       "titanium_steel"],
+              ["Crystaliron (TL10) — 1.25% per point, Cr200,000/ton. Max: TL or 13",                      "crystaliron"],
+              ["Bonded Superdense (TL14) — 0.80% per point, Cr500,000/ton. Max: TL",                      "bonded_superdense"],
+              ["Molecular Bonded (TL16) — 0.50% per point, MCr1.5/ton. Max: TL+4. Blocks tachyons",       "molecular_bonded"]
+            ].each do |label, value| %>
+              <option value="<%= value %>"
+                <%= "selected" if @ship.build_data.dig("hull", "armour_type") == value %>>
+                <%= label %>
+              </option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Armour Protection Value</label>
+          <input type="number" name="hull[armour_value]" min="0" step="1"
+                 value="<%= @ship.build_data.dig('hull', 'armour_value') || 0 %>"
+                 class="form-control"
+                 data-hull-target="armourValue"
+                 data-action="input->hull#calculate" />
+          <small>
+            Maximum: <span data-hull-target="armourMax">0</span> |
+            Tonnage per point: <span data-hull-target="armourTonnagePerPoint">0%</span>
+          </small>
+        </div>
+      </div>
+
+      <div class="summary-section">
+        <h3>Hull Options</h3>
+        <p class="info-text">
+          Additional hull modifications. Each option can only be added once.
+          Note: Solar Coating cannot be combined with other hull options (except Radiation Shielding).
+          Stealth cannot be combined with Reflec.
+        </p>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="hull[heat_shielding]" value="1"
+                   <%= "checked" if @ship.build_data.dig("hull", "heat_shielding") %>
+                   data-hull-target="heatShielding"
+                   data-action="change->hull#calculate" />
+            Heat Shielding (TL6) — MCr0.1/ton hull. Protects against re-entry and stellar proximity.
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="hull[radiation_shielding]" value="1"
+                   <%= "checked" if @ship.build_data.dig("hull", "radiation_shielding") %>
+                   data-hull-target="radiationShielding"
+                   data-action="change->hull#calculate" />
+            Radiation Shielding (TL7) — Cr25,000/ton hull. Decreases rads by 1,000. Hardens bridge.
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="hull[reflec]" value="1"
+                   <%= "checked" if @ship.build_data.dig("hull", "reflec") %>
+                   data-hull-target="reflec"
+                   data-action="change->hull#calculate" />
+            Reflec Coating (TL10) — MCr0.1/ton hull. +3 Protection vs lasers. Cannot combine with Stealth.
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="hull[solar_coating]" value="1"
+                   <%= "checked" if @ship.build_data.dig("hull", "solar_coating") %>
+                   data-hull-target="solarCoating"
+                   data-action="change->hull#calculate" />
+            Solar Coating — Passive solar power. Cannot combine with other hull options.
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Stealth Type</label>
+          <select name="hull[stealth_type]" class="form-control"
+                  data-hull-target="stealthType"
+                  data-action="change->hull#calculate">
+            <% [
+              ["None",                                                                  "none"],
+              ["Basic Stealth (TL8) — MCr0.04/ton, DM-2 sensors, 2% hull tonnage",    "basic"],
+              ["Improved Stealth (TL10) — MCr0.1/ton, DM-2 sensors, no tonnage",      "improved"],
+              ["Enhanced Stealth (TL12) — MCr0.5/ton, DM-4 sensors, no tonnage",      "enhanced"],
+              ["Advanced Stealth (TL14) — MCr1.0/ton, DM-6 sensors, no tonnage",      "advanced"]
+            ].each do |label, value| %>
+              <option value="<%= value %>"
+                <%= "selected" if @ship.build_data.dig("hull", "stealth_type") == value %>>
+                <%= label %>
+              </option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+
+      <div class="summary-section">
         <h3>Calculated Values</h3>
         <div class="result-grid">
           <div class="result-item">
-            <label>Base Cost</label>
+            <label>Base Hull Cost</label>
             <span data-hull-target="baseCost">Cr0</span>
           </div>
           <div class="result-item">
-            <label>Final Cost</label>
-            <span data-hull-target="finalCost">Cr0</span>
+            <label>Configuration Modifier</label>
+            <span data-hull-target="configModifier">—</span>
+          </div>
+          <div class="result-item">
+            <label>Specialised Hull Cost</label>
+            <span data-hull-target="specialisedCost">Cr0</span>
+          </div>
+          <div class="result-item">
+            <label>Armour Cost</label>
+            <span data-hull-target="armourCost">Cr0</span>
+          </div>
+          <div class="result-item">
+            <label>Armour Tonnage Used</label>
+            <span data-hull-target="armourTonnage">0</span>
+          </div>
+          <div class="result-item">
+            <label>Hull Options Cost</label>
+            <span data-hull-target="optionsCost">Cr0</span>
+          </div>
+          <div class="result-item">
+            <label>Stealth Tonnage Used</label>
+            <span data-hull-target="stealthTonnage">0</span>
           </div>
           <div class="result-item">
             <label>Hull Points</label>
@@ -55,14 +264,22 @@
           </div>
           <div class="result-item">
             <label>Streamlined?</label>
-            <span data-hull-target="streamlined">-</span>
+            <span data-hull-target="streamlined">—</span>
+          </div>
+          <div class="result-item">
+            <label>Total Hull Cost</label>
+            <strong><span data-hull-target="finalCost">Cr0</span></strong>
+          </div>
+          <div class="result-item">
+            <label>Warnings</label>
+            <span data-hull-target="warnings" style="color: orange;">—</span>
           </div>
         </div>
 
-        <input type="hidden" name="hull[cost]"
-               data-hull-target="costInput" />
-        <input type="hidden" name="hull[hull_points]"
-               data-hull-target="hullPointsInput" />
+        <input type="hidden" name="hull[cost]"             data-hull-target="costInput" />
+        <input type="hidden" name="hull[hull_points]"      data-hull-target="hullPointsInput" />
+        <input type="hidden" name="hull[armour_tonnage]"   data-hull-target="armourTonnageInput" />
+        <input type="hidden" name="hull[stealth_tonnage]"  data-hull-target="stealthTonnageInput" />
       </div>
 
       <div class="form-actions">

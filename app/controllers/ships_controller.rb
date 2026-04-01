@@ -87,13 +87,30 @@ class ShipsController < ApplicationController
   def step_params(step_number)
     case step_number
     when 1
-      hull = params.require(:hull).permit(:tonnage, :configuration, :cost, :hull_points)
+      hull = params.require(:hull).permit(
+        :tonnage, :configuration, :cost, :hull_points,
+        :specialised_type, :additional_type, :additional_type_percent,
+        :armour_type, :armour_value, :armour_tonnage, :stealth_tonnage,
+        :heat_shielding, :radiation_shielding, :reflec, :solar_coating, :stealth_type
+      )
       { "hull" => {
-        "tonnage"       => hull[:tonnage].to_i,
-        "configuration" => hull[:configuration],
-        "cost"          => hull[:cost].to_i,
-        "hull_points"   => hull[:hull_points].to_i
-      } }
+        "tonnage"                => hull[:tonnage].to_i,
+        "configuration"          => hull[:configuration],
+        "cost"                   => hull[:cost].to_i,
+        "hull_points"            => hull[:hull_points].to_i,
+        "specialised_type"       => hull[:specialised_type],
+        "additional_type"        => hull[:additional_type],
+        "additional_type_percent"=> hull[:additional_type_percent].to_i,
+        "armour_type"            => hull[:armour_type],
+        "armour_value"           => hull[:armour_value].to_i,
+        "armour_tonnage"         => hull[:armour_tonnage].to_i,
+        "stealth_type"           => hull[:stealth_type],
+        "stealth_tonnage"        => hull[:stealth_tonnage].to_i,
+        "heat_shielding"         => hull[:heat_shielding] == "1",
+        "radiation_shielding"    => hull[:radiation_shielding] == "1",
+        "reflec"                 => hull[:reflec] == "1",
+        "solar_coating"          => hull[:solar_coating] == "1"
+      }}
     when 2
       drives = params.require(:drives).permit(
         manoeuvre: %i[rating tonnage cost power],
