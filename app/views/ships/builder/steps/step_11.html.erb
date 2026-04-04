@@ -1,5 +1,5 @@
 <div class="container" data-controller="staterooms">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 11: Install Staterooms</h2>
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 11), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 11), method: :patch do |f| %>
 
       <div class="summary-section">
         <h3>Standard Staterooms</h3>
@@ -193,7 +193,7 @@
              data-staterooms-target="totalCapacityInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Crew", step_ship_path(@ship, step_number: 10),
+        <%= link_to "← Back to Crew", step_ships_builder_path(@ship, step_number: 10),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Cargo →", class: "btn btn-primary" %>
       </div>

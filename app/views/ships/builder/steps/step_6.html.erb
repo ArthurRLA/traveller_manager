@@ -1,5 +1,5 @@
 <div class="container" data-controller="computer">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 6: Install Computer</h2>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 6), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 6), method: :patch do |f| %>
 
       <h3>Primary Computer</h3>
 
@@ -132,7 +132,7 @@
              data-computer-target="totalCostInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Bridge", step_ship_path(@ship, step_number: 5),
+        <%= link_to "← Back to Bridge", step_ships_builder_path(@ship, step_number: 5),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Sensors →", class: "btn btn-primary" %>
       </div>

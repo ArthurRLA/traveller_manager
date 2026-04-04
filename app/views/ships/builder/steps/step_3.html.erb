@@ -1,5 +1,5 @@
 <div class="container" data-controller="power-plant">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 3: Install Power Plant</h2>
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 3), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 3), method: :patch do |f| %>
 
       <h3>Power Plant Type</h3>
       <div class="form-group">
@@ -107,7 +107,7 @@
              data-power-plant-target="powerGeneratedInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Drives", step_ship_path(@ship, step_number: 2),
+        <%= link_to "← Back to Drives", step_ships_builder_path(@ship, step_number: 2),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Fuel Tanks →", class: "btn btn-primary" %>
       </div>

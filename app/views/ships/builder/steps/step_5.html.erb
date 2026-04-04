@@ -1,5 +1,5 @@
 <div class="container" data-controller="bridge">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 5: Install Bridge</h2>
@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 5), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 5), method: :patch do |f| %>
 
       <h3>Bridge Size</h3>
       <div class="info-text">
@@ -83,7 +83,7 @@
              data-bridge-target="costInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Fuel Tanks", step_ship_path(@ship, step_number: 4),
+        <%= link_to "← Back to Fuel Tanks", step_ships_builder_path(@ship, step_number: 4),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and Continue to Computer →", class: "btn btn-primary" %>
       </div>

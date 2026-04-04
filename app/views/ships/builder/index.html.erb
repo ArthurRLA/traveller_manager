@@ -1,7 +1,7 @@
 <div style="max-width: 1200px; margin: 0 auto; padding: 24px 16px;">
   <div class="header">
     <h1>My <span style="color: var(--orange)">Ships</span></h1>
-    <%= link_to "Build New Ship", new_ship_path, class: "btn btn-primary" %>
+    <%= link_to "Build New Ship", new_ships_builder_path, class: "btn btn-primary" %>
   </div>
 
   <% if @ships.any? %>
@@ -13,8 +13,8 @@
           <p>Step: <strong><%= ship.current_step_name %></strong></p>
           <p>Total Cost: <strong>Cr<%= number_with_delimiter(ship.total_cost) %></strong></p>
           <div class="card-actions">
-            <%= link_to "Continue", ship_path(ship), class: "btn btn-secondary" %>
-            <%= button_to "Delete", ship_path(ship), method: :delete,
+            <%= link_to "Continue", ships_builder_path(ship), class: "btn btn-secondary" %>
+            <%= button_to "Delete", ships_builder_path(ship), method: :delete,
                 class: "btn btn-danger",
                 data: { confirm: "Are you sure?" } %>
           </div>

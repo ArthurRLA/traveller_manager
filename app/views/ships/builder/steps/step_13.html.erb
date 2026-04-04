@@ -1,5 +1,5 @@
 <div class="container">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 13: Finalise Design</h2>
@@ -236,9 +236,9 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 13), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 13), method: :patch do |f| %>
       <div class="form-actions">
-        <%= link_to "← Back to Cargo", step_ship_path(@ship, step_number: 12),
+        <%= link_to "← Back to Cargo", step_ships_builder_path(@ship, step_number: 12),
             class: "btn btn-secondary" %>
         <%= f.submit "Complete Ship Design", class: "btn btn-primary btn-large" %>
       </div>

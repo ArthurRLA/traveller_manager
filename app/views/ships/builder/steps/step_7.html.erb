@@ -1,5 +1,5 @@
 <div class="container" data-controller="sensors">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 7: Install Sensors</h2>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 7), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 7), method: :patch do |f| %>
 
       <h3>Sensor Suite</h3>
       <div class="form-group">
@@ -76,7 +76,7 @@
              data-sensors-target="dmInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Computer", step_ship_path(@ship, step_number: 6),
+        <%= link_to "← Back to Computer", step_ships_builder_path(@ship, step_number: 6),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Weapons →", class: "btn btn-primary" %>
       </div>

@@ -1,5 +1,5 @@
 <div class="container" data-controller="cargo">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 12: Allocate Cargo Space</h2>
@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 12), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 12), method: :patch do |f| %>
 
       <h3>Cargo Allocation</h3>
       <div class="info-text">
@@ -103,7 +103,7 @@
              data-cargo-target="availableInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Staterooms", step_ship_path(@ship, step_number: 11),
+        <%= link_to "← Back to Staterooms", step_ships_builder_path(@ship, step_number: 11),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Finalise →", class: "btn btn-primary" %>
       </div>

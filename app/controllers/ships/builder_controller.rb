@@ -1,4 +1,4 @@
-class ShipsController < ApplicationController
+class Ships::BuilderController < ApplicationController
   before_action :set_ship, only: %i[show step update_step destroy]
 
   def index
@@ -10,20 +10,20 @@ class ShipsController < ApplicationController
   end
 
   def create
-    @ship = Ship.new(name: params[:ship][:name])
+    @ship = Ship.new(name: params[:name])
     @ship.status = :in_progress
     @ship.current_step = 1
     @ship.build_data = {}
 
     if @ship.save
-      redirect_to step_ship_path(@ship, step_number: 1)
+      redirect_to step_ships_builder_path(@ship, step_number: 1)
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def show
-    redirect_to step_ship_path(@ship, step_number: @ship.current_step)
+    redirect_to step_ships_builder_path(@ship, step_number: @ship.current_step)
   end
 
   def step
@@ -35,7 +35,7 @@ class ShipsController < ApplicationController
       @total_cost         = calculate_total_cost(@ship)
     end
 
-    render "ships/steps/step_#{@step_number}"
+    render "ships/builder/steps/step_#{@step_number}"
   end
 
   def update_step
@@ -64,18 +64,18 @@ class ShipsController < ApplicationController
       status:       next_step > Ship::TOTAL_STEPS ? :completed : :in_progress
     )
       if next_step > Ship::TOTAL_STEPS
-        redirect_to ships_path, notice: "#{@ship.name} completed successfully!"
+        redirect_to ships_builder_index_path, notice: "#{@ship.name} completed successfully!"
       else
-        redirect_to step_ship_path(@ship, step_number: next_step)
+        redirect_to step_ships_builder_path(@ship, step_number: next_step)
       end
     else
-      render "ships/steps/step_#{@step_number}", status: :unprocessable_entity
+      render "ships/builder/steps/step_#{@step_number}", status: :unprocessable_entity
     end
   end
 
   def destroy
     @ship.destroy
-    redirect_to ships_path, notice: "Ship deleted."
+    redirect_to ships_builder_index_path, notice: "Ship deleted."
   end
 
   private

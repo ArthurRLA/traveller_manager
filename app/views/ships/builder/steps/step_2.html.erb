@@ -1,5 +1,5 @@
 <div class="container" data-controller="drives">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 2: Install Drives</h2>
@@ -8,7 +8,7 @@
       <p>Hull Tonnage: <strong><%= @ship.build_data.dig("hull", "tonnage") %> tons</strong></p>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 2), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 2), method: :patch do |f| %>
 
       <h3>Manoeuvre Drive</h3>
       <div class="form-group">
@@ -107,7 +107,7 @@
       </div>
 
       <div class="form-actions">
-        <%= link_to "← Back to Hull", step_ship_path(@ship, step_number: 1),
+        <%= link_to "← Back to Hull", step_ships_builder_path(@ship, step_number: 1),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Power Plant →", class: "btn btn-primary" %>
       </div>

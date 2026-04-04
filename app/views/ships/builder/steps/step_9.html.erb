@@ -1,5 +1,5 @@
 <div class="container" data-controller="optional-systems">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 9: Install Optional Systems</h2>
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 9), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 9), method: :patch do |f| %>
 
       <h3>Add Optional System</h3>
       <div class="weapon-builder">
@@ -98,7 +98,7 @@
              data-optional-systems-target="totalPowerInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Weapons", step_ship_path(@ship, step_number: 8),
+        <%= link_to "← Back to Weapons", step_ships_builder_path(@ship, step_number: 8),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Crew →", class: "btn btn-primary" %>
       </div>

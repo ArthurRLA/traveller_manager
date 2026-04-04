@@ -1,4 +1,4 @@
-module ShipsHelper
+module Ships::BuilderHelper
   def step_status_class(step_number, ship)
     if step_number < ship.current_step
       "completed"

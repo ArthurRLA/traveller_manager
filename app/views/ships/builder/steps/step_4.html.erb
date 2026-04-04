@@ -1,5 +1,5 @@
 <div class="container" data-controller="fuel-tanks">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 4: Install Fuel Tanks</h2>
@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 4), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 4), method: :patch do |f| %>
 
       <h3>Jump Fuel</h3>
       <div class="info-text">
@@ -87,7 +87,7 @@
              data-fuel-tanks-target="totalFuelInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Power Plant", step_ship_path(@ship, step_number: 3),
+        <%= link_to "← Back to Power Plant", step_ships_builder_path(@ship, step_number: 3),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Bridge →", class: "btn btn-primary" %>
       </div>

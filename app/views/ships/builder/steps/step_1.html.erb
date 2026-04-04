@@ -1,10 +1,10 @@
 <div class="container" data-controller="hull">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 1: Create a Hull</h2>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 1), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 1), method: :patch do |f| %>
 
       <div class="summary-section">
         <h3>Basic Hull</h3>

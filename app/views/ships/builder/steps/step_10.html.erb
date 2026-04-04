@@ -1,5 +1,5 @@
 <div class="container" data-controller="crew">
-  <%= render "ships/wizard_nav" %>
+  <%= render "ships/builder/wizard_nav" %>
 
   <div class="step-content">
     <h2>Step 10: Determine Crew</h2>
@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <%= form_with url: update_step_ship_path(@ship, step_number: 10), method: :patch do |f| %>
+    <%= form_with url: update_step_ships_builder_path(@ship, step_number: 10), method: :patch do |f| %>
 
       <h3>Ship Type</h3>
       <div class="form-group">
@@ -220,7 +220,7 @@
       <input type="hidden" name="crew[ship_type]"        data-crew-target="shipTypeInput" />
 
       <div class="form-actions">
-        <%= link_to "← Back to Optional Systems", step_ship_path(@ship, step_number: 9),
+        <%= link_to "← Back to Optional Systems", step_ships_builder_path(@ship, step_number: 9),
             class: "btn btn-secondary" %>
         <%= f.submit "Save and continue to Staterooms →", class: "btn btn-primary" %>
       </div>
